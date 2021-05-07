@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">finalproject</string>
+    <string name="mapbox_access_token">pk.eyJ1IjoiYWxvLWJlZXAiLCJhIjoiY2tvZGp4eG40MDJsZTJvbGJ6OThvOWlrYiJ9.WPwq4nZRNOyWyTWhMystqQ</string>
+    <string name="btn_showWeather_name">Show Weather at Pin</string>
 </resources>
