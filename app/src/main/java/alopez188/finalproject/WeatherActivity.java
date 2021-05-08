@@ -11,6 +11,8 @@ import android.widget.Button;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import cz.msebera.android.httpclient.Header;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -49,14 +51,17 @@ public class WeatherActivity extends AppCompatActivity {
                             // gather temperature
                             JSONObject json = response.getJSONObject("main");
                             double tmpTemp = json.getDouble("temp");
+                            Log.d("temp: ", String.valueOf(tmpTemp));
                             // gather weather description
-                            json = response.getJSONObject("weather");
+                            JSONArray jsonArray = response.getJSONArray("weather");
+                            json = jsonArray.getJSONObject(0);
                             String tmpDescription = json.getString("description");
                             // gather sunrise/sunset time
                             json = response.getJSONObject("sys");
                             int tmpSunrise = json.getInt("sunrise");
                             int tmpSunset = json.getInt("sunset");
-                            Log.d("temp: ", String.valueOf(tmpDescription));
+                            Log.d("desc: ", tmpDescription);
+                            Log.d("sunset: ", String.valueOf(tmpSunrise));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
