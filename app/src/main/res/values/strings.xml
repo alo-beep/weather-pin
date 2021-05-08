@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">finalproject</string>
     <string name="mapbox_access_token">pk.eyJ1IjoiYWxvLWJlZXAiLCJhIjoiY2tvZGp4eG40MDJsZTJvbGJ6OThvOWlrYiJ9.WPwq4nZRNOyWyTWhMystqQ</string>
+    <string name="openWeather_access_token">b99121ecce36058a1c22db935b8f0a72</string>
     <string name="btn_showWeather_name">Click Anywhere to Place Pin</string>
     <string name="title_activity_weather">WeatherActivity</string>
     <!-- Strings used for fragments for navigation -->

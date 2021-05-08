@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public boolean onMapClick(@NonNull LatLng point) {
                                 mapboxMap.clear();
-                                Toast.makeText(MainActivity.this, String.format("User clicked at: %s", point.toString()), Toast.LENGTH_LONG).show();
+                                //Toast.makeText(MainActivity.this, String.format("User clicked at: %s", point.toString()), Toast.LENGTH_LONG).show();
                                 marker = mapboxMap.addMarker(new MarkerOptions().position(point));
 
                                 pinLocation.setLatitude(point.getLatitude());

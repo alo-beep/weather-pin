@@ -7,7 +7,7 @@
     tools:context=".WeatherActivity">
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/btn_returnToLocation"
         android:layout_width="0dp"
         android:layout_height="80dp"
         android:layout_marginStart="15dp"
@@ -16,7 +16,8 @@
         android:text="Select New Location"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:onClick="openLocationScreen"/>
 
     <EditText
         android:id="@+id/editTextTextPersonName"
