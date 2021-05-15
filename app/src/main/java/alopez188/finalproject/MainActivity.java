@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private Marker marker;
     private Button btn_showWeather;
     private MapboxMap mapboxMap;
+    public static PinLocation pinLocation;
 
 
     @Override
@@ -41,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         btn_showWeather = findViewById(R.id.btn_showWeather);
-        PinLocation pinLocation = new PinLocation();
+        pinLocation = new PinLocation();
 
         mapView = (MapView) findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
