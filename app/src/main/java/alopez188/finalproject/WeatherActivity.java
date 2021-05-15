@@ -127,6 +127,11 @@ public class WeatherActivity extends AppCompatActivity {
         sunsetTextView.setText(weatherData.getSunsetTime());
         weatherDescriptionTextView.setText(weatherData.getWeatherDescription());
         temperatureTextView.setText(weatherData.getTemperature());
+
+        // scaling for icon image on different device sizes
+        final float scale = getResources().getDisplayMetrics().density;
+        iconImageView.setScaleX(scale);
+        iconImageView.setScaleY(scale);
     }
 
     /**
