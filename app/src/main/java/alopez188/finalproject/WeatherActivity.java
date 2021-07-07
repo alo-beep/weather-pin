@@ -1,8 +1,11 @@
 package alopez188.finalproject;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -62,49 +65,68 @@ public class WeatherActivity extends AppCompatActivity {
     private void getValuesFromLocation(WeatherData weatherData, double lat, double lon) {
         Handler handler = new Handler();
 
-        // conduct API connection
-        handler.postDelayed(new Runnable() {
-            // API used for gathering weather data
-            String url = String.format("http://api.openweathermap.org/data/2.5/weather?lat="
-                    + String.valueOf(lat) + "&lon=" + String.valueOf(lon) +"&appid=" + access_key + "&units=imperial");
+        // gathers access token from META_DATA for using MapBox API
+        @Nullable ApplicationInfo appInfo = null;
+        try {
+            appInfo = WeatherActivity.this.getPackageManager()
+                    .getApplicationInfo(WeatherActivity.this.getPackageName()
+                            , PackageManager.GET_META_DATA);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        @Nullable String openweatherAPIKey = null;
+        if (appInfo != null) {
+            openweatherAPIKey = appInfo.metaData.getString("OpenWeather_KEY");
+        }
 
-            AsyncHttpClient client = new AsyncHttpClient();
-            // Run upon a connection established
-            @Override
-            public void run() {
-                client.get(url, new JsonHttpResponseHandler(){
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                        try {
-                            // gather temperature
-                            JSONObject json = response.getJSONObject("main");
-                            double tmpTemp = json.getDouble("temp");
-                            // gather weather description and icon name
-                            JSONArray jsonArray = response.getJSONArray("weather");
-                            json = jsonArray.getJSONObject(0);
-                            String tmpDescription = json.getString("description");
-                            String tmpIcon = json.getString("icon");
-                            // gather sunrise/sunset time
-                            json = response.getJSONObject("sys");
-                            int tmpSunrise = json.getInt("sunrise");
-                            int tmpSunset = json.getInt("sunset");
+        // Start API connection after KEY gathered, for weather information gathering
+        if (openweatherAPIKey != null) {
+            // conduct API connection
+            String finalOpenweatherAPIKey = openweatherAPIKey;
+            handler.postDelayed(new Runnable() {
+                // API used for gathering weather data
+                String url = String.format("http://api.openweathermap.org/data/2.5/weather?lat="
+                        + String.valueOf(lat) + "&lon=" + String.valueOf(lon) 
+                        +"&appid=" + finalOpenweatherAPIKey + "&units=imperial");
 
-                            // place values within WeatherData object for activity
-                            weatherData.setSunriseTime(tmpSunrise);
-                            weatherData.setSunsetTime(tmpSunset);
-                            weatherData.setTemperature(tmpTemp);
-                            weatherData.setWeatherDescription(tmpDescription);
-                            weatherData.setIconLink(tmpIcon);
+                AsyncHttpClient client = new AsyncHttpClient();
+                // Run upon a connection established
+                @Override
+                public void run() {
+                    client.get(url, new JsonHttpResponseHandler(){
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                            try {
+                                // gather temperature
+                                JSONObject json = response.getJSONObject("main");
+                                double tmpTemp = json.getDouble("temp");
+                                // gather weather description and icon name
+                                JSONArray jsonArray = response.getJSONArray("weather");
+                                json = jsonArray.getJSONObject(0);
+                                String tmpDescription = json.getString("description");
+                                String tmpIcon = json.getString("icon");
+                                // gather sunrise/sunset time
+                                json = response.getJSONObject("sys");
+                                int tmpSunrise = json.getInt("sunrise");
+                                int tmpSunset = json.getInt("sunset");
 
-                            // execute function to insert values into this activity
-                            insertValuesToActivity(weatherData);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                                // place values within WeatherData object for activity
+                                weatherData.setSunriseTime(tmpSunrise);
+                                weatherData.setSunsetTime(tmpSunset);
+                                weatherData.setTemperature(tmpTemp);
+                                weatherData.setWeatherDescription(tmpDescription);
+                                weatherData.setIconLink(tmpIcon);
+
+                                // execute function to insert values into this activity
+                                insertValuesToActivity(weatherData);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
-                    }
-                });
-            }
-        }, 500);
+                    });
+                }
+            }, 500);
+        }
     }
 
     /**

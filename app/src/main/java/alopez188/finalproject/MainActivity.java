@@ -1,11 +1,15 @@
 package alopez188.finalproject;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -43,56 +47,72 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // gathers access token for using MapBox API
-        Mapbox.getInstance(this, getString(R.string.mapbox_access_token));
-        setContentView(R.layout.activity_main);
+        // gathers access token from META_DATA for using MapBox API
+        @Nullable ApplicationInfo appInfo = null;
+        try {
+            appInfo = MainActivity.this.getPackageManager()
+                    .getApplicationInfo(MainActivity.this.getPackageName()
+                            , PackageManager.GET_META_DATA);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        @Nullable String mapboxAPIKey = null;
+        if (appInfo != null) {
+            mapboxAPIKey = appInfo.metaData.getString("MapBox_KEY");
+        }
 
-        btn_showWeather = findViewById(R.id.btn_showWeather);
-        pinLocation = new PinLocation();
-        // assigns MapView object
-        mapView = (MapView) findViewById(R.id.mapView);
-        mapView.onCreate(savedInstanceState);
-        mapView.getMapAsync(new OnMapReadyCallback() {
-            // once MapView object is ready, begin loading
-            @Override
-            public void onMapReady(@NonNull MapboxMap mapboxMap) {
+        // Start MapView from MapBoxSDK if an API key was gathered
+        if (mapboxAPIKey != null) {
+            Mapbox.getInstance(this, mapboxAPIKey);
+            setContentView(R.layout.activity_main);
 
-                mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
-                    @Override
-                    public void onStyleLoaded(@NonNull Style style) {
+            btn_showWeather = findViewById(R.id.btn_showWeather);
+            pinLocation = new PinLocation();
+            // assigns MapView object
+            mapView = (MapView) findViewById(R.id.mapView);
+            mapView.onCreate(savedInstanceState);
+            mapView.getMapAsync(new OnMapReadyCallback() {
+                // once MapView object is ready, begin loading
+                @Override
+                public void onMapReady(@NonNull MapboxMap mapboxMap) {
 
-                        // Map is set up and the style has loaded. Now you can add data or make other map adjustments
+                    mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
+                        @Override
+                        public void onStyleLoaded(@NonNull Style style) {
 
-                        // set starting camera centered in bakersfield
-                        CameraPosition position = new CameraPosition.Builder()
-                                .target(new LatLng(35.3733333, -119.0177778))
-                                .zoom(7)
-                                .tilt(20)
-                                .build();
-                        mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position), 10);
+                            // Map is set up and the style has loaded. Now you can add data or make other map adjustments
 
-                        // gather longitude and latitude from point click
-                        mapboxMap.addOnMapClickListener(new MapboxMap.OnMapClickListener() {
-                            @Override
-                            public boolean onMapClick(@NonNull LatLng point) {
-                                mapboxMap.clear();  // to limit markers (pins) to one
-                                marker = mapboxMap.addMarker(new MarkerOptions().position(point));  // add marker (pin)
+                            // set starting camera centered in bakersfield
+                            CameraPosition position = new CameraPosition.Builder()
+                                    .target(new LatLng(35.3733333, -119.0177778))
+                                    .zoom(7)
+                                    .tilt(20)
+                                    .build();
+                            mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position), 10);
 
-                                // set lat and long into pinLocation object
-                                pinLocation.setLatitude(point.getLatitude());
-                                pinLocation.setLongitude(point.getLongitude());
+                            // gather longitude and latitude from point click
+                            mapboxMap.addOnMapClickListener(new MapboxMap.OnMapClickListener() {
+                                @Override
+                                public boolean onMapClick(@NonNull LatLng point) {
+                                    mapboxMap.clear();  // to limit markers (pins) to one
+                                    marker = mapboxMap.addMarker(new MarkerOptions().position(point));  // add marker (pin)
 
-                                // enable button once marker set
-                                btn_showWeather.setEnabled(true);
-                                btn_showWeather.setText("Show Weather at Pin");
-                                return true;
-                            }
-                        });
+                                    // set lat and long into pinLocation object
+                                    pinLocation.setLatitude(point.getLatitude());
+                                    pinLocation.setLongitude(point.getLongitude());
 
-                    }
-                });
-            }
-        });
+                                    // enable button once marker set
+                                    btn_showWeather.setEnabled(true);
+                                    btn_showWeather.setText("Show Weather at Pin");
+                                    return true;
+                                }
+                            });
+
+                        }
+                    });
+                }
+            });
+        }
     }
 
     // necessary for mapView functioning
