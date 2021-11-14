@@ -35,7 +35,6 @@ import java.io.InputStream;
 public class WeatherActivity extends AppCompatActivity {
 
     private Button btn_returnToLocation;
-    private String access_key = "b99121ecce36058a1c22db935b8f0a72";
     public WeatherData weatherData;
     private TextView sunsetTextView;
     private TextView sunriseTextView;

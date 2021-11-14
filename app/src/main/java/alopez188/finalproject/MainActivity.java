@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     public static PinLocation pinLocation;
 
     // Run once activity has been created
+    // , serves as main functionality for MapBox
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
 
             btn_showWeather = findViewById(R.id.btn_showWeather);
             pinLocation = new PinLocation();
+
             // assigns MapView object
             mapView = (MapView) findViewById(R.id.mapView);
             mapView.onCreate(savedInstanceState);
@@ -82,10 +84,10 @@ public class MainActivity extends AppCompatActivity {
 
                             // Map is set up and the style has loaded. Now you can add data or make other map adjustments
 
-                            // set starting camera centered in bakersfield
+                            // set starting camera centered in the United States
                             CameraPosition position = new CameraPosition.Builder()
-                                    .target(new LatLng(35.3733333, -119.0177778))
-                                    .zoom(7)
+                                    .target(new LatLng(31.5, -98.5))
+                                    .zoom(3)
                                     .tilt(20)
                                     .build();
                             mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position), 10);

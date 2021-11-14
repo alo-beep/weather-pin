@@ -14,6 +14,9 @@ android {
         versionCode 1
         versionName "1.0"
 
+        //manifestPlaceholders = [MAPBOX_KEY : "TMP",
+        //                       OPENWEATHER_KEY : "TMP"]
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 

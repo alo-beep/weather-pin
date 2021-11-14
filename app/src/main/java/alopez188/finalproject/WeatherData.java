@@ -7,7 +7,7 @@ import java.util.Date;
  * Class deals with weather data organizing
  */
 public class WeatherData {
-    private String access_key = "b99121ecce36058a1c22db935b8f0a72";
+    private String access_key;
     private double temperature;
     private int sunriseTime;
     private int sunsetTime;
@@ -26,6 +26,8 @@ public class WeatherData {
     public String getAccess_key() {
         return access_key;
     }
+
+    public void setAccess_key(String key) { access_key = key; }
 
     /**
      * Getter, for temperature
