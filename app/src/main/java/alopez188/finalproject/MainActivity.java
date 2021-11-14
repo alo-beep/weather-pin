@@ -25,18 +25,26 @@ import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.mapbox.mapboxsdk.location.LocationComponent;
+import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions;
+import com.mapbox.mapboxsdk.location.modes.CameraMode;
+import com.mapbox.mapboxsdk.location.modes.RenderMode;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
+
+import java.util.List;
 
 /**
  * MainActivity class, deals with Map navigation and pinning locations
  * @author Angel Lopez
  * @version 1.0
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements
+        PermissionsListener {
 
+    private PermissionsManager permissionsManager;
     private MapView mapView;
     private Marker marker;
     private Button btn_showWeather;
@@ -78,12 +86,16 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onMapReady(@NonNull MapboxMap mapboxMap) {
 
+                    MainActivity.this.mapboxMap = mapboxMap;
+
                     mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
                         @Override
                         public void onStyleLoaded(@NonNull Style style) {
 
-                            // Map is set up and the style has loaded. Now you can add data or make other map adjustments
+                            // ask for permission for current location
+                            enableLocationComponent(style);
 
+                            // Map is set up and the style has loaded, now
                             // set starting camera centered in the United States
                             CameraPosition position = new CameraPosition.Builder()
                                     .target(new LatLng(31.5, -98.5))
@@ -173,6 +185,56 @@ public class MainActivity extends AppCompatActivity {
     public void openWeatherScreen(View view) {
         if (btn_showWeather.isEnabled() == true) {
             startActivity(new Intent(MainActivity.this, WeatherActivity.class));
+        }
+    }
+
+    @Override
+    public void onExplanationNeeded(List<String> permissionsToExplain) {
+        Toast.makeText(this, R.string.user_location_permission_explanation, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onPermissionResult(boolean granted) {
+        if (granted) {
+            mapboxMap.getStyle(new Style.OnStyleLoaded() {
+                @Override
+                public void onStyleLoaded(@NonNull Style style) {
+                    enableLocationComponent(style);
+                }
+            });
+        } else {
+            Toast.makeText(this, R.string.user_location_permission_not_granted, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        permissionsManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @SuppressWarnings({"MissingPermission"})
+    private void enableLocationComponent(@NonNull Style loadedMapStyle) {
+        // check if permissions are enabled and if not request
+        if (PermissionsManager.areLocationPermissionsGranted(this)) {
+            // get an instance of the component
+            LocationComponent locationComponent = mapboxMap.getLocationComponent();
+
+            // activate with options
+            locationComponent.activateLocationComponent(
+                    LocationComponentActivationOptions.builder(this, loadedMapStyle).build()
+            );
+
+            // enable to make component visible
+            locationComponent.setLocationComponentEnabled(true);
+
+            // set the component's camera mode
+            locationComponent.setCameraMode(CameraMode.TRACKING);
+
+            // set the component's render mode
+            locationComponent.setRenderMode(RenderMode.COMPASS);
+        } else {
+            permissionsManager = new PermissionsManager(this);
+            permissionsManager.requestLocationPermissions(this);
         }
     }
 }
