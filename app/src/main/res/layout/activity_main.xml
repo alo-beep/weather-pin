@@ -9,23 +9,38 @@
     <com.mapbox.mapboxsdk.maps.MapView
         android:id="@+id/mapView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+        android:layout_height="match_parent" >
 
     </com.mapbox.mapboxsdk.maps.MapView>
 
     <Button
         android:id="@+id/btn_showWeather"
-        android:layout_width="0dp"
+        android:layout_width="260dp"
         android:layout_height="80dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginEnd="15dp"
-        android:layout_marginBottom="30dp"
+        android:layout_marginEnd="100dp"
+        android:layout_marginBottom="20dp"
         android:enabled="false"
+        android:onClick="openWeatherScreen"
         android:text="@string/btn_showWeather_name"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:onClick="openWeatherScreen"/>
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/btn_centerLoc"
+        android:layout_width="wrap_content"
+        android:layout_height="80dp"
+        android:layout_marginStart="11dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:onClick="showCurrentLocation"
+        android:visibility="visible"
+        app:icon="@drawable/ic_current_location"
+        app:iconPadding="0dp"
+        app:iconSize="60dp"
+        app:iconTint="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btn_showWeather" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

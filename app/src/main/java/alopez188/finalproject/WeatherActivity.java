@@ -157,7 +157,7 @@ public class WeatherActivity extends AppCompatActivity {
 
     /**
      * Function will download an image based on the URL inputted
-     *  , utilized for the icon download
+     *  , utilized for downloading weather type icon
      */
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         ImageView bmImage;
@@ -187,7 +187,11 @@ public class WeatherActivity extends AppCompatActivity {
      * button click function, triggers to send user back to main map screen
      * @param view View
      */
-    public void openLocationScreen(View view) {
-        startActivity(new Intent(WeatherActivity.this, MainActivity.class));
+    public void openMapScreen(View view) {
+
+        // return to main activity without creating a starting a new instance
+        Intent openMainActivity = new Intent (WeatherActivity.this, MainActivity.class);
+        openMainActivity.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        startActivityIfNeeded(openMainActivity, 0);
     }
 }

@@ -7,10 +7,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.BounceInterpolator;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -27,6 +29,8 @@ import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.location.LocationComponent;
 import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions;
+import com.mapbox.mapboxsdk.location.LocationComponentOptions;
+import com.mapbox.mapboxsdk.location.OnLocationCameraTransitionListener;
 import com.mapbox.mapboxsdk.location.modes.CameraMode;
 import com.mapbox.mapboxsdk.location.modes.RenderMode;
 import com.mapbox.mapboxsdk.maps.MapView;
@@ -49,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements
     private Marker marker;
     private Button btn_showWeather;
     private MapboxMap mapboxMap;
+    private Style styleMapBox;
     public static PinLocation pinLocation;
 
     // Run once activity has been created
@@ -92,14 +97,16 @@ public class MainActivity extends AppCompatActivity implements
                         @Override
                         public void onStyleLoaded(@NonNull Style style) {
 
-                            // ask for permission for current location
-                            enableLocationComponent(style);
+                            styleMapBox = style;
+
+                            // ask for permission to view user's current location
+                            enableLocationComponent(styleMapBox);
 
                             // Map is set up and the style has loaded, now
-                            // set starting camera centered in the United States
+                            // set starting camera centered in the Atlantic Ocean
                             CameraPosition position = new CameraPosition.Builder()
-                                    .target(new LatLng(31.5, -98.5))
-                                    .zoom(3)
+                                    .target(new LatLng(31.5, -40.5))
+                                    .zoom(1)
                                     .tilt(20)
                                     .build();
                             mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position), 10);
@@ -117,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements
 
                                     // enable button once marker set
                                     btn_showWeather.setEnabled(true);
-                                    btn_showWeather.setText("Show Weather at Pin");
+                                    btn_showWeather.setText(R.string.weather_button_location_set);
                                     return true;
                                 }
                             });
@@ -159,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements
 
     // necessary for mapView functioning
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         mapView.onSaveInstanceState(outState);
     }
@@ -176,16 +183,6 @@ public class MainActivity extends AppCompatActivity implements
     protected void onDestroy() {
         super.onDestroy();
         mapView.onDestroy();
-    }
-
-    /**
-     * Button click function trigger for main screen button, opens WeatherActivity
-     * @param view View
-     */
-    public void openWeatherScreen(View view) {
-        if (btn_showWeather.isEnabled() == true) {
-            startActivity(new Intent(MainActivity.this, WeatherActivity.class));
-        }
     }
 
     @Override
@@ -216,6 +213,7 @@ public class MainActivity extends AppCompatActivity implements
     private void enableLocationComponent(@NonNull Style loadedMapStyle) {
         // check if permissions are enabled and if not request
         if (PermissionsManager.areLocationPermissionsGranted(this)) {
+
             // get an instance of the component
             LocationComponent locationComponent = mapboxMap.getLocationComponent();
 
@@ -226,15 +224,45 @@ public class MainActivity extends AppCompatActivity implements
 
             // enable to make component visible
             locationComponent.setLocationComponentEnabled(true);
-
+            
             // set the component's camera mode
-            locationComponent.setCameraMode(CameraMode.TRACKING);
-
+            // , and zoom into the user's location
+            OnLocationCameraTransitionListener tmp = null;
+            locationComponent.setCameraMode(CameraMode.TRACKING, 
+                    1000, 6.0, 0.0, 0.0, tmp);
+            
+            // zoom closer towards the user's current location
+            locationComponent.zoomWhileTracking(8, 1000);
+            
             // set the component's render mode
             locationComponent.setRenderMode(RenderMode.COMPASS);
+
+
         } else {
+
             permissionsManager = new PermissionsManager(this);
             permissionsManager.requestLocationPermissions(this);
         }
     }
+
+    /**
+     * Button click function trigger for main screen button, opens WeatherActivity
+     * @param view View
+     */
+    public void openWeatherScreen(View view) {
+        if (btn_showWeather.isEnabled()) {
+            startActivity(new Intent(MainActivity.this, WeatherActivity.class));
+        }
+    }
+
+    /**
+     * Button click function which centers camera onto user's current location
+     * @param view View
+     */
+    public void showCurrentLocation(View view) {
+        // ask for permission for current location
+        enableLocationComponent(styleMapBox);
+    }
+
+
 }
