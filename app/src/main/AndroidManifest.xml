@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="alopez188.finalproject">
 
-
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -13,23 +12,24 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Finalproject">
-        <activity android:name=".WeatherActivity" />
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".SplashActivity"
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".WeatherActivity" />
+        <activity android:name=".MainActivity"/>
 
         <meta-data
-            android:name = "MapBox_KEY"
-            android:value = "${MAPBOX_KEY}"/>
-
+            android:name="MapBox_KEY"
+            android:value="${MAPBOX_KEY}" />
         <meta-data
-            android:name = "OpenWeather_KEY"
-            android:value = "${OPENWEATHER_KEY}"/>
-
+            android:name="OpenWeather_KEY"
+            android:value="${OPENWEATHER_KEY}" />
     </application>
 
 </manifest>
