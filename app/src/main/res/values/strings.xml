@@ -16,5 +16,6 @@
     <string name="weather_button_location_set">Show Weather at Pin</string>
     <string name="user_location_permission_not_granted">Select location on map!</string>
     <string name="user_location_permission_explanation">To move camera to current location!</string>
+    <string name="weather_button_current_location_set">Show Weather at Current Location</string>
     />
 </resources>

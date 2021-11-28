@@ -7,20 +7,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.view.animation.BounceInterpolator;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.mapbox.android.core.location.LocationEngine;
-import com.mapbox.android.core.location.LocationEngineProvider;
 import com.mapbox.android.core.permissions.PermissionsListener;
 import com.mapbox.android.core.permissions.PermissionsManager;
-import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
@@ -29,7 +23,6 @@ import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.location.LocationComponent;
 import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions;
-import com.mapbox.mapboxsdk.location.LocationComponentOptions;
 import com.mapbox.mapboxsdk.location.OnLocationCameraTransitionListener;
 import com.mapbox.mapboxsdk.location.modes.CameraMode;
 import com.mapbox.mapboxsdk.location.modes.RenderMode;
@@ -54,7 +47,9 @@ public class MainActivity extends AppCompatActivity implements
     private Button btn_showWeather;
     private MapboxMap mapboxMap;
     private Style styleMapBox;
+    private Location lastLocation;
     public static PinLocation pinLocation;
+    public static PinLocation currentLocation;
 
     // Run once activity has been created
     // , serves as main functionality for MapBox
@@ -237,6 +232,7 @@ public class MainActivity extends AppCompatActivity implements
             // set the component's render mode
             locationComponent.setRenderMode(RenderMode.COMPASS);
 
+            lastLocation = locationComponent.getLastKnownLocation();
 
         } else {
 
@@ -257,11 +253,23 @@ public class MainActivity extends AppCompatActivity implements
 
     /**
      * Button click function which centers camera onto user's current location
+     * , and set weather button for current location
      * @param view View
      */
     public void showCurrentLocation(View view) {
-        // ask for permission for current location
+        // ask for permission for current location and find current location
         enableLocationComponent(styleMapBox);
+
+        // store coordinates for current location
+        pinLocation.setLatitude(lastLocation.getLatitude());
+        pinLocation.setLongitude(lastLocation.getLongitude());
+
+        // update button text for current location and enable
+        btn_showWeather.setEnabled(true);
+        btn_showWeather.setText(R.string.weather_button_current_location_set);
+
+        // remove current pins
+        mapboxMap.clear();
     }
 
 
