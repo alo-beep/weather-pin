@@ -88,6 +88,7 @@ public class WeatherActivity extends AppCompatActivity {
                         + String.valueOf(lat) + "&lon=" + String.valueOf(lon) 
                         +"&appid=" + finalOpenweatherAPIKey + "&units=imperial");
 
+
                 AsyncHttpClient client = new AsyncHttpClient();
                 // Run upon a connection established
                 @Override

@@ -206,7 +206,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @SuppressWarnings({"MissingPermission"})
     private void enableLocationComponent(@NonNull Style loadedMapStyle) {
-        // check if permissions are enabled and if not request
+        // check if permissions are enabled
         if (PermissionsManager.areLocationPermissionsGranted(this)) {
 
             // get an instance of the component
@@ -234,8 +234,7 @@ public class MainActivity extends AppCompatActivity implements
 
             lastLocation = locationComponent.getLastKnownLocation();
 
-        } else {
-
+        } else { // permissions are not enabled so request
             permissionsManager = new PermissionsManager(this);
             permissionsManager.requestLocationPermissions(this);
         }
@@ -260,16 +259,21 @@ public class MainActivity extends AppCompatActivity implements
         // ask for permission for current location and find current location
         enableLocationComponent(styleMapBox);
 
-        // store coordinates for current location
-        pinLocation.setLatitude(lastLocation.getLatitude());
-        pinLocation.setLongitude(lastLocation.getLongitude());
+        if (PermissionsManager.areLocationPermissionsGranted(this)) {
+            // store coordinates for current location
+            pinLocation.setLatitude(lastLocation.getLatitude());
+            pinLocation.setLongitude(lastLocation.getLongitude());
 
-        // update button text for current location and enable
-        btn_showWeather.setEnabled(true);
-        btn_showWeather.setText(R.string.weather_button_current_location_set);
+            // update button text for current location and enable
+            btn_showWeather.setEnabled(true);
+            btn_showWeather.setText(R.string.weather_button_current_location_set);
 
-        // remove current pins
-        mapboxMap.clear();
+            // remove current pins
+            mapboxMap.clear();
+        } else {
+            Toast.makeText(this, R.string.user_location_permission_not_granted, Toast.LENGTH_LONG).show();
+        }
+
     }
 
 
