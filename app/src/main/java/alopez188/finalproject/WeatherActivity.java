@@ -88,7 +88,6 @@ public class WeatherActivity extends AppCompatActivity {
                         + String.valueOf(lat) + "&lon=" + String.valueOf(lon) 
                         +"&appid=" + finalOpenweatherAPIKey + "&units=imperial");
 
-
                 AsyncHttpClient client = new AsyncHttpClient();
                 // Run upon a connection established
                 @Override
@@ -97,9 +96,10 @@ public class WeatherActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                             try {
-                                // gather temperature
+                                // gather temperature and humidity
                                 JSONObject json = response.getJSONObject("main");
                                 double tmpTemp = json.getDouble("temp");
+                                int humidity = json.getInt("humidity");
                                 // gather weather description and icon name
                                 JSONArray jsonArray = response.getJSONArray("weather");
                                 json = jsonArray.getJSONObject(0);
@@ -109,6 +109,10 @@ public class WeatherActivity extends AppCompatActivity {
                                 json = response.getJSONObject("sys");
                                 int tmpSunrise = json.getInt("sunrise");
                                 int tmpSunset = json.getInt("sunset");
+                                // gather wind speed and direction
+                                json = response.getJSONObject("wind");
+                                double tmpWindSpeed = json.getDouble("speed");
+                                int tmpWindDirection = json.getInt("deg");
 
                                 // place values within WeatherData object for activity
                                 weatherData.setSunriseTime(tmpSunrise);
@@ -116,8 +120,9 @@ public class WeatherActivity extends AppCompatActivity {
                                 weatherData.setTemperature(tmpTemp);
                                 weatherData.setWeatherDescription(tmpDescription);
                                 weatherData.setIconLink(tmpIcon);
+                                weatherData.setWindSpeed(tmpWindSpeed);
+                                weatherData.setWindDirection(tmpWindDirection);
 
-                                // execute function to insert values into this activity
                                 insertValuesToActivity(weatherData);
                             } catch (JSONException e) {
                                 e.printStackTrace();
