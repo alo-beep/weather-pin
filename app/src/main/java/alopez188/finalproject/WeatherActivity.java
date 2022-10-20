@@ -41,6 +41,8 @@ public class WeatherActivity extends AppCompatActivity {
     private TextView temperatureTextView;
     private TextView weatherDescriptionTextView;
     private ImageView iconImageView;
+    private TextView humidityTextView;
+    private TextView windTextView;
 
     // Run once activity has been created
     @Override
@@ -99,7 +101,7 @@ public class WeatherActivity extends AppCompatActivity {
                                 // gather temperature and humidity
                                 JSONObject json = response.getJSONObject("main");
                                 double tmpTemp = json.getDouble("temp");
-                                int humidity = json.getInt("humidity");
+                                int tmpHumidity = json.getInt("humidity");
                                 // gather weather description and icon name
                                 JSONArray jsonArray = response.getJSONArray("weather");
                                 json = jsonArray.getJSONObject(0);
@@ -122,6 +124,7 @@ public class WeatherActivity extends AppCompatActivity {
                                 weatherData.setIconLink(tmpIcon);
                                 weatherData.setWindSpeed(tmpWindSpeed);
                                 weatherData.setWindDirection(tmpWindDirection);
+                                weatherData.setHumidity(tmpHumidity);
 
                                 insertValuesToActivity(weatherData);
                             } catch (JSONException e) {
@@ -144,6 +147,8 @@ public class WeatherActivity extends AppCompatActivity {
         sunriseTextView = findViewById(R.id.txt_sunrise);
         temperatureTextView = findViewById(R.id.txt_temperature);
         weatherDescriptionTextView = findViewById(R.id.txt_description);
+        humidityTextView = findViewById(R.id.txt_humidity);
+        windTextView = findViewById(R.id.txt_wind);
         iconImageView = findViewById(R.id.img_icon);
         // set, and download from API, icon ImageView
         new DownloadImageTask((ImageView)findViewById(R.id.img_icon))
@@ -154,6 +159,8 @@ public class WeatherActivity extends AppCompatActivity {
         sunsetTextView.setText(weatherData.getSunsetTime());
         weatherDescriptionTextView.setText(weatherData.getWeatherDescription());
         temperatureTextView.setText(weatherData.getTemperature());
+        humidityTextView.setText(weatherData.getHumidity());
+        windTextView.setText(weatherData.getWind());
 
         // scaling for icon image on different device sizes
         final float scale = getResources().getDisplayMetrics().density;

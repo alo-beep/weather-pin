@@ -18,6 +18,8 @@ public class WeatherData {
     private String iconName;
     private double windSpeed;
     private int windDirection;
+    private int humidity;
+    private String wind;
 
     /**
      * Default constructor
@@ -149,7 +151,7 @@ public class WeatherData {
      * Getter, for wind speed
      * @return string of formatted wind speed value
      */
-    public String getWindSpeed() { return String.valueOf(windSpeed + "mph"); }
+    public String getWindSpeed() { return String.valueOf(windSpeed); }
 
     /**
      * Setter, for wind direction
@@ -188,4 +190,22 @@ public class WeatherData {
         else if (degree >= 330 && degree <= 345) { direction = "NNW"; }
         return direction;
     }
+
+    /**
+     * Getter, for the complete wind string
+     * @return formatted wind text with wind speed and direction
+     */
+    public String getWind() { return getWindSpeed() + "mph " + getWindDirection(); }
+
+    /**
+     * Setter, for humidity
+     * @param tmpHumidity int
+     */
+    public void setHumidity(int tmpHumidity) { this.humidity = tmpHumidity; }
+
+    /**
+     * Getter, for humidity
+     * @return
+     */
+    public String getHumidity() { return String.valueOf(this.humidity) + "%"; }
 }
