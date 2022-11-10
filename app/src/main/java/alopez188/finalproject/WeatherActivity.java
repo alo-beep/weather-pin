@@ -15,6 +15,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -43,13 +45,14 @@ public class WeatherActivity extends AppCompatActivity {
     private ImageView iconImageView;
     private TextView humidityTextView;
     private TextView windTextView;
+    private RelativeLayout layoutLoading;
+    private ProgressBar progressLoading;
 
     // Run once activity has been created
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        btn_returnToLocation = findViewById(R.id.btn_returnToLocation);
         setContentView(R.layout.activity_weather);
         weatherData = new WeatherData();
 
@@ -143,6 +146,9 @@ public class WeatherActivity extends AppCompatActivity {
      */
     public void insertValuesToActivity(WeatherData weatherData) {
         // set all elements to their respective ID's
+        layoutLoading = findViewById(R.id.layout_loading);
+        progressLoading = findViewById(R.id.progress_loading);
+        btn_returnToLocation = findViewById(R.id.btn_returnToLocation);
         sunsetTextView = findViewById(R.id.txt_sunset);
         sunriseTextView = findViewById(R.id.txt_sunrise);
         temperatureTextView = findViewById(R.id.txt_temperature);
@@ -166,6 +172,11 @@ public class WeatherActivity extends AppCompatActivity {
         final float scale = getResources().getDisplayMetrics().density;
         iconImageView.setScaleX(scale);
         iconImageView.setScaleY(scale);
+
+        // disable loading screen
+        btn_returnToLocation.setEnabled(true);
+        progressLoading.setAlpha(0);
+        layoutLoading.setAlpha(0);
     }
 
     /**

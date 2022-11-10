@@ -152,6 +152,7 @@
         android:layout_marginStart="15dp"
         android:layout_marginEnd="15dp"
         android:layout_marginBottom="30dp"
+        android:enabled="false"
         android:onClick="openMapScreen"
         android:text="Select New Location"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -230,6 +231,7 @@
         app:layout_constraintStart_toEndOf="@+id/linearLayout" />
 
     <GridLayout
+        android:id="@+id/gridLayout"
         android:layout_width="wrap_content"
         android:layout_height="90dp"
         android:layout_marginStart="20dp"
@@ -282,7 +284,30 @@
             android:gravity="center"
             android:text="0%"
             android:textSize="16sp" />
+
     </GridLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_loading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="100"
+        android:background="@color/background"
+        android:foreground="@color/background"
+        tools:context=".SplashActivity"
+        tools:layout_editor_absoluteX="64dp"
+        tools:layout_editor_absoluteY="425dp">
+
+    </RelativeLayout>
+
+    <ProgressBar
+        android:id="@+id/progress_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/layout_loading"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/layout_loading" />
 
     <!-- app:srcCompat="@drawable/ic_launcher_background" -->
 
